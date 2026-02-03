@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .geral{
+      border: 1px solid black;
+      padding: 10px;
+      margin: auto;
+    }
+    .area-deposito-venda{
+      padding: 10px;
+      border: 1px solid black;
+      margin: auto;
+      justify-content: center;
+      align-items: center;
+    }
+    form input{
+      display: block;
+      height: 35px;
+      box-sizing: border-box ;
+    }
+    input[type="text"]{
+      outline: none;
+      width: 100%;
+    }
+    /* Estilizando o Botão */
+    button, input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #0ac963;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+      width: 100%;
+    }
+    #resultado{
+      border: 1px solid black;
+      width: 300px;
+      padding: 10px;
+    }
+    h1{text-align: center;}
+  </style>
+</head>
+<body>
+  <div class="geral">
+    <div><h1>MAPEAMENTO DE AREAS</h1></div>
+    <div class="area-deposito-venda">
+      <form id="meuFormulario">
+        Loja: <input type="text" name="loja">
+        Nº Coletores: <input type="text" name="coletores">
+        Area deposito: <input type="text" name="deposito">
+        Area venda: <input type="text" name="venda">
+        <button type="submit">OK</button>
+      </form>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const form = document.getElementById('meuFormulario');
+    let ultimoValor = 0;
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const loja = formData.get('loja');
+      const coletores = formData.get('coletores');
+      const deposito = parseInt(formData.get('deposito'));
+      const venda = parseInt(formData.get('venda'));
+
+      const depositoIntervalo = `1 a ${deposito}`;
+      const vendaIntervalo = `${deposito + 1} a ${deposito + venda}`;
+
+      ultimoValor = deposito + venda;
+
+      Swal.fire({
+        title: '<b>Resultado:</b>',
+        html: `
+          <p><b>Loja:</b> ${loja}</p>
+          <p><b>Nº Coletores:</b> ${coletores}</p>
+          <p><b>Área Depósito:</b> ${depositoIntervalo}</p>
+          <p><b>Área Venda:</b> ${vendaIntervalo}</p>
+        `,
+        icon: 'info'
+      });
+    });
+  </script>
+</body>
+</html>
