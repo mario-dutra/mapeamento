@@ -3,24 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>MAPEAMENTO DE AREAS</title>
   <style>
     .geral{
       border: 1px solid black;
       padding: 10px;
       margin: auto;
+      border-radius: 10px;
     }
     .area-deposito-venda{
       padding: 10px;
-      border: 1px solid black;
+      border: 0px solid black;
       margin: auto;
       justify-content: center;
       align-items: center;
     }
-    form input{
+    select{
+      height: 40px;
+      border-radius: 10px;
+    }
+    form input {
       display: block;
-      height: 35px;
+      height: 40px;
       box-sizing: border-box ;
+      border-radius: 10px;
     }
     input[type="text"]{
       outline: none;
@@ -43,7 +49,25 @@
       width: 300px;
       padding: 10px;
     }
-    h1{text-align: center;}
+    h1{
+      text-align: center;
+    }
+    .checkbox-container {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .checkbox-item {
+      margin: 5px;
+      padding: 5px;
+      background-color: #f7f7f7;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -51,39 +75,129 @@
     <div><h1>MAPEAMENTO DE AREAS</h1></div>
     <div class="area-deposito-venda">
       <form id="meuFormulario">
-        Loja: <input type="text" name="loja">
-        Nº Coletores: <input type="text" name="coletores">
-        Area deposito: <input type="text" name="deposito">
-        Area venda: <input type="text" name="venda">
+        Loja:<select name="loja" id="">
+          <option value="Lourival Parente">Lourival Parente</option>
+          <option value="Parque Piaui">Parque Piaui</option>
+          <option value="Dirceu">Dirceu</option>
+          <option value="Renascenca">Renascenca</option>
+          <option value="São Joaquim">São Joaquim</option>
+          <option value="Kennedy">Kennedy</option>
+          <option value="Demerval">Demerval</option>
+          <option value="Irmã Dulce">Irmã Dulce</option>
+          <option value="Porto Alegre">Porto Alegre</option>
+          <option value="Imporio mocambinho">Imporio mocambinho</option>
+          <option value="Dom Severino">Dom Severino</option>
+          <option value="Agua Mineral">Agua Mineral</option>
+          <option value="Jose de Freitas">Jose de Freitas</option>
+          <option value="Agua Branca">Agua Branca</option>
+          <option value="Mocambinho">mocambinho</option>
+          <option value="Posto Timon">posto timon</option>
+        </select><br /><br />
+        Nº Coletores: <input type="text" name="coletores" required>
+        <div class="checkbox-container">
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="deposito-check"> Deposito</label>
+          </div>
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="venda-check"> Venda</label>
+          </div>
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="padaria-check"> Padaria</label>
+          </div>
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="aereo-check"> Aereo</label>
+          </div>
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="budega-check"> Budega</label>
+          </div>
+          <div class="checkbox-item">
+            <label><input type="checkbox" id="camarafria-check"> Camarafria</label>
+          </div>
+        </div>
+        <div id="inputs-area"></div>
         <button type="submit">OK</button>
       </form>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const inputsArea = document.getElementById('inputs-area');
+    const areas = ['deposito', 'venda', 'padaria', 'aereo', 'budega', 'camarafria'];
+    const labels = {
+      deposito: 'Deposito',
+      venda: 'Venda',
+      padaria: 'Padaria',
+      aereo: 'Aereo',
+      budega: 'Budega',
+      camarafria: 'Camarafria'
+    };
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const area = checkbox.id.replace('-check', '');
+        if (checkbox.checked) {
+          if (!document.getElementById(`${area}-input`)) {
+            const inputHtml = `<div id="${area}-input"><label>Area ${labels[area]}: <input type="text" name="${area}"></label></div>`;
+            inputsArea.insertAdjacentHTML('beforeend', inputHtml);
+          }
+        } else {
+          const inputDiv = document.getElementById(`${area}-input`);
+          if (inputDiv) {
+            inputDiv.remove();
+          }
+        }
+      });
+    });
+
     const form = document.getElementById('meuFormulario');
     let ultimoValor = 0;
-
     form.addEventListener('submit', function(event) {
       event.preventDefault();
       const formData = new FormData(form);
       const loja = formData.get('loja');
       const coletores = formData.get('coletores');
-      const deposito = parseInt(formData.get('deposito'));
-      const venda = parseInt(formData.get('venda'));
-
-      const depositoIntervalo = `1 a ${deposito}`;
-      const vendaIntervalo = `${deposito + 1} a ${deposito + venda}`;
-
-      ultimoValor = deposito + venda;
-
+      const areas = {};
+      if (document.getElementById('deposito-check').checked) {
+        const deposito = parseInt(formData.get('deposito'));
+        areas.deposito = { valor: deposito, intervalo: `1 a ${deposito}` };
+        ultimoValor = deposito;
+      }
+      if (document.getElementById('venda-check').checked) {
+        const venda = parseInt(formData.get('venda'));
+        areas.venda = { valor: venda, intervalo: `${ultimoValor + 1} a ${ultimoValor + venda}` };
+        ultimoValor += venda;
+      }
+      if (document.getElementById('padaria-check').checked) {
+        const padaria = parseInt(formData.get('padaria'));
+        areas.padaria = { valor: padaria, intervalo: `${ultimoValor + 1} a ${ultimoValor + padaria}` };
+        ultimoValor += padaria;
+      }
+      if (document.getElementById('aereo-check').checked) {
+        const aereo = parseInt(formData.get('aereo'));
+        areas.aereo = { valor: aereo, intervalo: `${ultimoValor + 1} a ${ultimoValor + aereo}` };
+        ultimoValor += aereo;
+      }
+      if (document.getElementById('budega-check').checked) {
+        const budega = parseInt(formData.get('budega'));
+        areas.budega = { valor: budega, intervalo: `${ultimoValor + 1} a ${ultimoValor + budega}` };
+        ultimoValor += budega;
+      }
+      if (document.getElementById('camarafria-check').checked) {
+        const camarafria = parseInt(formData.get('camarafria'));
+        areas.camarafria = { valor: camarafria, intervalo: `${ultimoValor + 1} a ${ultimoValor + camarafria}` };
+        ultimoValor += camarafria;
+      }
+      let html = '';
+      for (const [area, valor] of Object.entries(areas)) {
+        html += `<p><b>Área ${area}:</b> ${valor.intervalo}</p>`;
+      }
       Swal.fire({
-        title: '<b>Resultado:</b>',
-        html: `
+        title: '<b></b>',
+        html: ` 
           <p><b>Loja:</b> ${loja}</p>
           <p><b>Nº Coletores:</b> ${coletores}</p>
-          <p><b>Área Depósito:</b> ${depositoIntervalo}</p>
-          <p><b>Área Venda:</b> ${vendaIntervalo}</p>
+          ${html}
         `,
         icon: 'info'
       });
