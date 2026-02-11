@@ -13,11 +13,12 @@
     }
     .area-deposito-venda{
       padding: 10px;
-      border: 0px solid black;
       margin: auto;
       justify-content: center;
       align-items: center;
+     
     }
+
     select{
       height: 40px;
       border-radius: 10px;
@@ -68,18 +69,30 @@
       background-color: #f7f7f7;
       border-radius: 5px;
     }
+
+    .stilo{
+        padding: 10px;
+      border: 1px solid #ccc;
+        border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
   </style>
 </head>
 <body>
   <div class="geral">
     <div><h1>MAPEAMENTO DE AREAS</h1></div>
+    
     <div class="area-deposito-venda">
-      <form id="meuFormulario">
+     
+      <form id="meuFormulario" class="stilo">
         Loja:<select name="loja" id="">
           <option value="Lourival Parente">Lourival Parente</option>
           <option value="Parque Piaui">Parque Piaui</option>
           <option value="Dirceu">Dirceu</option>
           <option value="Renascenca">Renascenca</option>
+          <option value="Renascenca">Cristo rei</option>
+          <option value="Renascenca">Morada do sol</option>
+          <option value="Renascenca">CD areias</option>
           <option value="São Joaquim">São Joaquim</option>
           <option value="Kennedy">Kennedy</option>
           <option value="Demerval">Demerval</option>
@@ -93,7 +106,10 @@
           <option value="Mocambinho">mocambinho</option>
           <option value="Posto Timon">posto timon</option>
         </select><br /><br />
-        Nº Coletores: <input type="text" name="coletores" required>
+         Sessão: <input name="sessao" required class="stilo">
+         Nº Coletores: <input type="text" name="coletores" required class="stilo">
+        Colaboradores: <input type="text" name="colaboradores" required class="stilo">
+    
         <div class="checkbox-container">
           <div class="checkbox-item">
             <label><input type="checkbox" id="deposito-check"> Deposito</label>
@@ -117,7 +133,7 @@
         <div id="inputs-area"></div>
         <button type="submit">OK</button>
       </form>
-    </div>
+  </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
@@ -157,12 +173,21 @@
       const formData = new FormData(form);
       const loja = formData.get('loja');
       const coletores = formData.get('coletores');
+      const colaboradores = formData.get('colaboradores');
+      const sessao = formData.get('sessao');
       const areas = {};
       if (document.getElementById('deposito-check').checked) {
         const deposito = parseInt(formData.get('deposito'));
         areas.deposito = { valor: deposito, intervalo: `1 a ${deposito}` };
         ultimoValor = deposito;
       }
+
+      if (document.getElementById('camarafria-check').checked) {
+        const camarafria = parseInt(formData.get('camarafria'));
+        areas.camarafria = { valor: camarafria, intervalo: `${ultimoValor + 1} a ${ultimoValor + camarafria}` };
+        ultimoValor += camarafria;
+      }
+
       if (document.getElementById('venda-check').checked) {
         const venda = parseInt(formData.get('venda'));
         areas.venda = { valor: venda, intervalo: `${ultimoValor + 1} a ${ultimoValor + venda}` };
@@ -183,23 +208,25 @@
         areas.budega = { valor: budega, intervalo: `${ultimoValor + 1} a ${ultimoValor + budega}` };
         ultimoValor += budega;
       }
-      if (document.getElementById('camarafria-check').checked) {
-        const camarafria = parseInt(formData.get('camarafria'));
-        areas.camarafria = { valor: camarafria, intervalo: `${ultimoValor + 1} a ${ultimoValor + camarafria}` };
-        ultimoValor += camarafria;
-      }
+      
+
       let html = '';
       for (const [area, valor] of Object.entries(areas)) {
         html += `<p><b>Área ${area}:</b> ${valor.intervalo}</p>`;
       }
       Swal.fire({
-        title: '<b></b>',
+        title: '<b>Mapeamento de Áreas</b>',
         html: ` 
           <p><b>Loja:</b> ${loja}</p>
+          <p><b>Sessão:</b> ${sessao}</p>
           <p><b>Nº Coletores:</b> ${coletores}</p>
+           <p><b>Colaboradores:</b> ${colaboradores}</p>
+         
           ${html}
         `,
-        icon: 'info'
+  imageUrl: 'logo.png', // URL da sua imagem
+  imageWidth: 100, // Largura em pixels
+  imageHeight: 100, // Altura em pixels
       });
     });
   </script>
